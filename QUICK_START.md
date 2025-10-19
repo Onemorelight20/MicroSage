@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 # Install Node.js dependencies
 cd frontend
-npm install
+pnpm install
 cd ..
 ```
 
@@ -33,7 +33,7 @@ cd ..
 ```bash
 python start_web_ui.py
 # Then in a new terminal:
-cd frontend && npm start
+cd frontend && pnpm start
 ```
 
 **Option B: Manual Start**
@@ -42,7 +42,7 @@ cd frontend && npm start
 python -m uvicorn backend.api.main:app --reload
 
 # Terminal 2: Frontend
-cd frontend && npm start
+cd frontend && pnpm start
 ```
 
 ### Step 4: Open in Browser (5 sec)
@@ -96,13 +96,13 @@ curl http://localhost:8000/health
 ### Frontend
 ```bash
 # Start development server
-cd frontend && npm start
+cd frontend && pnpm start
 
 # Build for production
-cd frontend && npm run build
+cd frontend && pnpm run build
 
 # Install new dependency
-cd frontend && npm install <package-name>
+cd frontend && pnpm add <package-name>
 ```
 
 ---
@@ -129,7 +129,7 @@ cat frontend/.env
 
 # Restart frontend
 cd frontend
-npm start
+pnpm start
 ```
 
 ### Export fails

@@ -172,7 +172,7 @@ pip install -r requirements.txt
 
 # Frontend
 cd frontend
-npm install
+pnpm install
 ```
 
 ### 2. Start the Application
@@ -192,7 +192,7 @@ python -m uvicorn backend.api.main:app --reload
 Terminal 2 (Frontend):
 ```bash
 cd frontend
-npm start
+pnpm start
 ```
 
 ### 3. Access the Interface
@@ -359,7 +359,7 @@ gunicorn backend.api.main:app \
 
 ```bash
 cd frontend
-npm run build
+pnpm run build
 
 # Serve the build directory with any static server
 # Or use services like Vercel, Netlify, etc.

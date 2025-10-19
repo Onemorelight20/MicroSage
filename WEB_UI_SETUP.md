@@ -51,7 +51,7 @@ NanoSage/
 
 ### Frontend Requirements
 - Node.js 16 or higher
-- npm or yarn package manager
+- pnpm package manager (v8.0 or higher)
 
 ---
 
@@ -78,11 +78,8 @@ This will install all existing dependencies plus the new web API requirements:
 # Navigate to frontend directory
 cd frontend
 
-# Install dependencies
-npm install
-
-# Or with yarn
-yarn install
+# Install dependencies with pnpm
+pnpm install
 ```
 
 ---
@@ -143,10 +140,7 @@ The backend API will be available at:
 ```bash
 # From the frontend directory
 cd frontend
-npm start
-
-# Or with yarn
-yarn start
+pnpm start
 ```
 
 The frontend will be available at: http://localhost:3000
@@ -165,7 +159,7 @@ uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```bash
 # Build the frontend
 cd frontend
-npm run build
+pnpm run build
 
 # The build output will be in frontend/build/
 # Serve it with any static file server or configure your web server
@@ -311,8 +305,8 @@ pip install -r requirements.txt --upgrade
 ```bash
 # Clear cache and reinstall
 cd frontend
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 ```
 
 **Build errors**
@@ -320,8 +314,8 @@ npm install
 # Check Node.js version
 node --version  # Should be 16+
 
-# Update npm
-npm install -g npm@latest
+# Update pnpm if needed
+npm install -g pnpm@latest
 ```
 
 **Can't connect to backend**
@@ -362,7 +356,7 @@ pip install reportlab
 
 1. **Production build** is optimized:
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 2. **Use a CDN** for static assets

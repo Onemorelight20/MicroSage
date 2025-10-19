@@ -188,14 +188,14 @@ pip install -r requirements.txt
 
 # 2. Install frontend dependencies
 cd frontend
-npm install
+pnpm install
 
 # 3. Start backend (Terminal 1)
 python -m uvicorn backend.api.main:app --reload
 
 # 4. Start frontend (Terminal 2)
 cd frontend
-npm start
+pnpm start
 
 # 5. Open browser
 # http://localhost:3000

@@ -41,7 +41,7 @@ NanoSage/
 │   │   ├── index.tsx                    # React entry point
 │   │   └── index.css                    # Global styles
 │   ├── .env.example                     # Environment variables template
-│   ├── package.json                     # NPM dependencies
+│   ├── package.json                     # Node dependencies (pnpm)
 │   └── tsconfig.json                    # TypeScript configuration
 │
 ├── 📁 exports/                          # Generated export files (gitignored)
@@ -219,7 +219,7 @@ REACT_APP_WS_URL=ws://localhost:8000
 python -m uvicorn backend.api.main:app --reload
 
 # Terminal 2: Frontend
-cd frontend && npm start
+cd frontend && pnpm start
 ```
 
 ### Production
@@ -228,7 +228,7 @@ cd frontend && npm start
 gunicorn backend.api.main:app -w 4 -k uvicorn.workers.UvicornWorker
 
 # Frontend
-cd frontend && npm run build
+cd frontend && pnpm run build
 # Serve frontend/build/ with any static server
 ```
 
