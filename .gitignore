@@ -64,6 +64,8 @@ downloaded_webpages/
 # Data files
 *.csv
 *.json
+!package.json
+!tsconfig.json
 *.pkl
 *.pickle
 *.h5
