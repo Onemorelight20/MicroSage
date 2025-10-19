@@ -320,6 +320,7 @@ class SearchSession:
         print("[INFO] Creating KnowledgeBase...")
         self.kb = KnowledgeBase(self.model, self.processor, model_type=self.model_type, device=self.device, text_model=self.text_model)
 
+        # Load local corpus if available.
         self.corpus = []
         if self.corpus_dir:
             print(f"[INFO] Loading local documents from {self.corpus_dir}")
