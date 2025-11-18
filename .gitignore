@@ -71,11 +71,6 @@ downloaded_webpages/
 *.h5
 *.hdf5
 
-# Test files
-test_*.py
-*_test.py
-tests/
-
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
@@ -86,6 +81,8 @@ site/
 
 # Cache
 .cache/
+
+# Test coverage output (tests/ directory should be tracked!)
 .pytest_cache/
 .coverage
 htmlcov/
