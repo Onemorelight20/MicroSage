@@ -75,7 +75,8 @@ class ConnectionManager:
         """Broadcast a message to all connected clients"""
         json_message = json.dumps(message)
 
-        for query_id, connections in self.active_connections.items():
+        # Use list() to create a copy to avoid RuntimeError when dict changes during iteration
+        for query_id, connections in list(self.active_connections.items()):
             disconnected = set()
             for connection in connections:
                 try:
