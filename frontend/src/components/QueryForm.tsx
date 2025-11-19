@@ -75,8 +75,21 @@ const QueryForm: React.FC<QueryFormProps> = ({ onSubmit, isLoading }) => {
     setUploadError('');
 
     try {
+      // Validate file sizes before uploading (50MB limit)
+      const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB in bytes
+      const filesToUpload = Array.from(files);
+      
+      for (const file of filesToUpload) {
+        if (file.size > MAX_FILE_SIZE) {
+          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          throw new Error(
+            `File "${file.name}" exceeds maximum size of 50MB (${fileSizeMB}MB). Please choose a smaller file.`
+          );
+        }
+      }
+
       // Upload each file
-      const uploadPromises = Array.from(files).map(file => queryAPI.uploadFile(file));
+      const uploadPromises = filesToUpload.map(file => queryAPI.uploadFile(file));
       const responses = await Promise.all(uploadPromises);
 
       // Add to uploaded files list
@@ -89,7 +102,8 @@ const QueryForm: React.FC<QueryFormProps> = ({ onSubmit, isLoading }) => {
 
       setUploadedFiles(prev => [...prev, ...newFiles]);
     } catch (error: any) {
-      setUploadError(error.response?.data?.detail || 'Failed to upload file(s)');
+      const errorMessage = error.message || error.response?.data?.detail || 'Failed to upload file(s)';
+      setUploadError(errorMessage);
     } finally {
       setIsUploading(false);
       // Clear file input
@@ -156,7 +170,7 @@ const QueryForm: React.FC<QueryFormProps> = ({ onSubmit, isLoading }) => {
       <div className="form-group file-upload-section">
         <label>
           Attach Files (Optional)
-          <span className="file-hint"> - PDF, TXT, PNG, JPG/JPEG</span>
+          <span className="file-hint"> - PDF, TXT, PNG, JPG/JPEG (Max 50MB each)</span>
         </label>
 
         <div className="file-upload-area">
