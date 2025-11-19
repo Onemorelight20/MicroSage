@@ -357,3 +357,58 @@ class TestValidationError:
             raise ValidationError("Test error")
         except ValidationError as e:
             assert str(e) == "Test error"
+
+
+@pytest.mark.unit
+@pytest.mark.validators
+class TestValidateQueryParametersCorpusDir:
+    """Additional tests for corpus_dir validation"""
+
+    def test_corpus_dir_file_instead_of_directory(self, temp_dir):
+        """Test that validation fails when corpus_dir is a file, not a directory"""
+        # Create a file instead of directory
+        file_path = os.path.join(temp_dir, "test_file.txt")
+        with open(file_path, "w") as f:
+            f.write("test")
+
+        params = QueryParameters(
+            query="test query",
+            web_search=True,
+            retrieval_model=RetrievalModel.SIGLIP,
+            top_k=5,
+            max_depth=2,
+            corpus_dir=file_path,
+        )
+
+        from backend.utils.validators import ValidationError
+
+        with pytest.raises(ValidationError, match="Corpus directory does not exist"):
+            validate_query_parameters(params)
+
+
+@pytest.mark.unit
+@pytest.mark.validators
+class TestSanitizeInputEdgeCases:
+    """Additional edge case tests for sanitize_input"""
+
+    def test_sanitize_input_only_dangerous_chars(self):
+        """Test sanitizing input that contains only dangerous characters"""
+        result = sanitize_input("<>{}|\\^~[]`")
+        assert result == ""
+
+    def test_sanitize_input_mixed_content(self):
+        """Test sanitizing input with mixed safe and dangerous content"""
+        result = sanitize_input("Hello <world> {test}")
+        assert result == "Hello world test"
+
+    def test_sanitize_input_preserves_numbers(self):
+        """Test that numbers are preserved"""
+        result = sanitize_input("Test 123 456")
+        assert result == "Test 123 456"
+
+    def test_sanitize_input_preserves_punctuation(self):
+        """Test that safe punctuation is preserved"""
+        result = sanitize_input("Hello, world! How are you?")
+        assert "," in result
+        assert "!" in result
+        assert "?" in result

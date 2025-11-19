@@ -503,3 +503,52 @@ class TestConnectionManagerIntegration:
         # New connection should receive message
         assert len(websocket2.sent_messages) == 1
         assert "After reconnect" in websocket2.sent_messages[0]
+
+
+@pytest.mark.unit
+@pytest.mark.websocket
+class TestConnectionManagerEdgeCases:
+    """Edge case tests for ConnectionManager"""
+
+    @pytest.fixture
+    def manager(self):
+        """Create ConnectionManager instance"""
+        return ConnectionManager()
+
+    @pytest.mark.asyncio
+    async def test_send_progress_update_with_debug_no_connections(self):
+        """Test send_progress_update with debug mode when no connections exist"""
+        manager = ConnectionManager(debug=True)
+
+        message = {"status": "test", "message": "Test message"}
+
+        # Should not raise error
+        await manager.send_progress_update("nonexistent-query", message)
+
+    @pytest.mark.asyncio
+    async def test_disconnect_removes_empty_query_entry(self, manager):
+        """Test that disconnect removes query entry when last connection is removed"""
+        websocket = MockWebSocket()
+        query_id = "query-123"
+
+        await manager.connect(websocket, query_id)
+        assert query_id in manager.active_connections
+
+        manager.disconnect(websocket)
+
+        # Query should be completely removed from active_connections
+        assert query_id not in manager.active_connections
+
+    @pytest.mark.asyncio
+    async def test_send_progress_update_empty_message(self, manager):
+        """Test sending empty message"""
+        websocket = MockWebSocket()
+        query_id = "query-123"
+
+        await manager.connect(websocket, query_id)
+
+        message = {}
+        await manager.send_progress_update(query_id, message)
+
+        # Should still send the message
+        assert len(websocket.sent_messages) == 1
