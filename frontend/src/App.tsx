@@ -16,6 +16,12 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [isOffline, setIsOffline] = useState<boolean>(() => {
+    if (typeof navigator === 'undefined') {
+      return false;
+    }
+    return !navigator.onLine;
+  });
 
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -25,6 +31,24 @@ const App: React.FC = () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+    };
+
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 
@@ -166,6 +190,13 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="app-main">
         <div className="container">
+          {/* Offline Banner */}
+          {isOffline && (
+            <div className="error-banner offline-banner" role="status">
+              <strong>Offline:</strong> No internet connection detected. Queries may pause until connectivity is restored.
+            </div>
+          )}
+
           {/* Error Banner */}
           {error && (
             <div className="error-banner global-error">

@@ -11,6 +11,9 @@ from datetime import datetime
 class FileUploadService:
     """Service for managing file uploads"""
 
+    # Maximum file size: 50MB
+    MAX_FILE_SIZE = 50 * 1024 * 1024  # 52428800 bytes
+
     def __init__(self, upload_dir: str = "uploads"):
         self.upload_dir = upload_dir
         self.file_metadata: Dict[str, Dict] = {}
@@ -48,7 +51,7 @@ class FileUploadService:
             Dict with file metadata including file_id
 
         Raises:
-            ValueError: If file type is not allowed
+            ValueError: If file type is not allowed or file is too large
         """
         # Validate file type
         is_allowed, file_type = self._is_allowed_file(file.filename)
@@ -56,6 +59,18 @@ class FileUploadService:
             raise ValueError(
                 f"File type not allowed. Supported formats: PDF, TXT, PNG, JPG/JPEG"
             )
+
+        # Check file size by reading content
+        file_content = await file.read()
+        file_size_mb = len(file_content) / (1024 * 1024)
+        
+        if len(file_content) > self.MAX_FILE_SIZE:
+            raise ValueError(
+                f"File size exceeds maximum limit of 50MB. Your file is {file_size_mb:.1f}MB"
+            )
+        
+        # Reset file pointer to beginning
+        await file.seek(0)
 
         # Generate unique file ID
         file_id = str(uuid.uuid4())
@@ -65,12 +80,12 @@ class FileUploadService:
         stored_filename = f"{file_id}{ext}"
         file_path = os.path.join(self.upload_dir, stored_filename)
 
-        # Save file to disk
+        # Save file to disk (using the content we already read)
         try:
             with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
+                buffer.write(file_content)
         finally:
-            file.file.close()
+            await file.close()
 
         # Get file size
         file_size = os.path.getsize(file_path)
